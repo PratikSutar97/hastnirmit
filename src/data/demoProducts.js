@@ -1,6 +1,8 @@
+
 export const demoProducts = [
   {
     id: "demo-1",
+    slug: "floral-tealight-holder",
     name: "Floral Tealight Holder",
     category: "Diyas & Candles",
     price: 299,
@@ -8,9 +10,17 @@ export const demoProducts = [
     label: "BESTSELLER",
     color: "product-blue",
     symbol: "✿",
+    description:
+      "A decorative handmade floral tealight holder to brighten your home and festive celebrations.",
+    stock: 12,
+    featured: true,
+    isNew: false,
+    images: [],
+    tags: ["tealight", "floral", "handmade", "decor"],
   },
   {
     id: "demo-2",
+    slug: "traditional-handmade-earrings",
     name: "Traditional Handmade Earrings",
     category: "Jewellery",
     price: 349,
@@ -18,9 +28,17 @@ export const demoProducts = [
     label: "POPULAR",
     color: "product-pink",
     symbol: "✧",
+    description:
+      "Traditional handmade earrings designed to complement ethnic and festive outfits.",
+    stock: 8,
+    featured: true,
+    isNew: false,
+    images: [],
+    tags: ["earrings", "jewellery", "traditional"],
   },
   {
     id: "demo-3",
+    slug: "decorative-lotus-diya",
     name: "Decorative Lotus Diya",
     category: "Festive Decor",
     price: 249,
@@ -28,9 +46,17 @@ export const demoProducts = [
     label: "HANDMADE",
     color: "product-orange",
     symbol: "✿",
+    description:
+      "A decorative lotus-inspired diya for festivals, celebrations and home decoration.",
+    stock: 15,
+    featured: true,
+    isNew: false,
+    images: [],
+    tags: ["diya", "lotus", "festive", "decor"],
   },
   {
     id: "demo-4",
+    slug: "festive-rangoli-decor",
     name: "Festive Rangoli Decor",
     category: "Home Decor",
     price: 399,
@@ -38,5 +64,19 @@ export const demoProducts = [
     label: "NEW",
     color: "product-purple",
     symbol: "❋",
+    description:
+      "Colourful handmade decorative rangoli art for festive home decoration.",
+    stock: 6,
+    featured: true,
+    isNew: true,
+    images: [],
+    tags: ["rangoli", "festive", "home decor"],
   },
+];
+
+export const productCategories = [
+  "Jewellery",
+  "Diyas & Candles",
+  "Festive Decor",
+  "Home Decor",
 ];

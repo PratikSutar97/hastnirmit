@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Gem,
   Flame,
@@ -8,49 +10,49 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-const categories = [
-  {
-    name: "Handmade Jewellery",
-    description: "Beautiful accessories for every occasion",
-    icon: Gem,
-    color: "category-pink",
-  },
-  {
-    name: "Diyas & Candles",
-    description: "Add warmth to your special moments",
-    icon: Flame,
-    color: "category-orange",
-  },
-  {
-    name: "Rangoli & Decor",
-    description: "Traditional art with a creative touch",
-    icon: Flower2,
-    color: "category-purple",
-  },
-  {
-    name: "Home Decor",
-    description: "Little details that make a home",
-    icon: House,
-    color: "category-green",
-  },
-  {
-    name: "Handmade Gifts",
-    description: "Thoughtful gifts made with love",
-    icon: Gift,
-    color: "category-yellow",
-  },
-  {
-    name: "Custom Creations",
-    description: "Something special, made your way",
-    icon: Palette,
-    color: "category-blue",
-  },
-];
+import { getAllCategories } from "../../services/categoryService";
+
+const ICON_MAP = {
+  Gem,
+  Flame,
+  Flower2,
+  House,
+  Gift,
+  Palette,
+};
 
 function CategorySection() {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+
+    async function fetchCategories() {
+      try {
+        setLoading(true);
+        const data = await getAllCategories();
+        if (active) {
+          setCategories(data);
+        }
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchCategories();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return (
     <section className="section categories-section" id="categories">
-
       <div className="section-heading">
         <span className="section-eyebrow">EXPLORE OUR WORLD</span>
 
@@ -59,39 +61,42 @@ function CategorySection() {
         </h2>
 
         <p>
-          Find something special for yourself, your home
-          or someone you love.
+          Find something special for yourself, your home or someone you love.
         </p>
       </div>
 
-      <div className="category-grid">
-        {categories.map((category) => {
-          const Icon = category.icon;
+      {loading ? (
+        <p className="products-status">Loading categories...</p>
+      ) : categories.length === 0 ? (
+        <p className="products-status">
+          No categories added yet. Create categories in Admin &gt; Categories.
+        </p>
+      ) : (
+        <div className="category-grid">
+          {categories.map((category) => {
+            const Icon = ICON_MAP[category.icon] || Gem;
 
-          return (
-            <a
-              href="#shop"
-              className={`category-card ${category.color}`}
-              key={category.name}
-            >
-              <div className="category-icon">
-                <Icon size={30} strokeWidth={1.5} />
-              </div>
+            return (
+              <Link
+                to={`/shop?category=${encodeURIComponent(category.name)}`}
+                className={`category-card ${category.color || "category-pink"}`}
+                key={category.id}
+              >
+                <div className="category-icon">
+                  <Icon size={30} strokeWidth={1.5} />
+                </div>
 
-              <div>
-                <h3>{category.name}</h3>
-                <p>{category.description}</p>
-              </div>
+                <div>
+                  <h3>{category.name}</h3>
+                  {category.description && <p>{category.description}</p>}
+                </div>
 
-              <ArrowUpRight
-                className="category-arrow"
-                size={20}
-              />
-            </a>
-          );
-        })}
-      </div>
-
+                <ArrowUpRight className="category-arrow" size={20} />
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </section>
   );
 }

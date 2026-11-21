@@ -3,8 +3,7 @@ export const STORE_CONFIG = {
   tagline: "Handmade With Love",
   description:
     "Discover unique handmade jewellery, festive decorations and beautiful creations.",
-
-  logo: "/demo.png",
+  logo: "../../images/hastnirmit_logo.png",
 
   instagram: "https://www.instagram.com/_hastnirmit_/",
 

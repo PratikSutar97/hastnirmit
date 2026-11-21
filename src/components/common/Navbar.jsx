@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCart } from "../../hooks/useCart";
 import {
   Menu,
   X,
@@ -7,58 +8,109 @@ import {
 } from "lucide-react";
 
 import { SiInstagram } from "react-icons/si";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { STORE_CONFIG } from "../../config/storeConfig";
 
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+function scrollToSectionId(id) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
 
-  const navLinks = [
-    { label: "Home", href: "#home" },
-    { label: "Shop", href: "#shop" },
-    { label: "Collections", href: "#categories" },
-    { label: "Our Story", href: "#about" },
-    { label: "Contact", href: "#contact" },
-  ];
+function Navbar() {
+  const { cartCount } = useCart();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const closeMenu = () => setMenuOpen(false);
 
+  const handleSectionLinkClick = (event, href) => {
+    if (!href.startsWith("/#")) {
+      closeMenu();
+      return;
+    }
+
+    event.preventDefault();
+    const targetId = href.slice(2);
+    closeMenu();
+
+    if (location.pathname === "/") {
+      window.history.replaceState(null, "", href);
+      scrollToSectionId(targetId);
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        window.history.replaceState(null, "", href);
+        scrollToSectionId(targetId);
+      }, 80);
+    }
+  };
+
+  const navLinks = [
+    { label: "Home", href: "/#home" },
+    { label: "Shop", href: "/shop" },
+    { label: "Collections", href: "/#categories" },
+    { label: "Our Story", href: "/#about" },
+    { label: "Contact", href: "/#contact" },
+  ];
+
   return (
     <header className="navbar">
+
       <div className="navbar-inner">
 
-        <a href="#home" className="brand" onClick={closeMenu}>
+        <Link
+          to="/"
+          className="brand"
+          onClick={closeMenu}
+        >
           <img
             src={STORE_CONFIG.logo}
             alt="Hastnirmit logo"
             className="brand-logo"
           />
-
-          <span className="brand-name">
-            HASTNIRMIT
-            <small>HANDMADE WITH LOVE</small>
-          </span>
-        </a>
+        </Link>
 
         <nav className={`nav-links ${menuOpen ? "active" : ""}`}>
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={closeMenu}
-              className="nav-link"
-            >
-              {link.label}
-            </a>
-          ))}
+
+          {navLinks.map((link) => {
+            const isHashLink = link.href.startsWith("/#");
+            const className =
+              link.label === "Shop" && location.pathname === "/shop"
+                ? "nav-link nav-link-active"
+                : "nav-link";
+
+            return isHashLink ? (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => handleSectionLinkClick(e, link.href)}
+                className={className}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.href}
+                onClick={closeMenu}
+                className={className}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+
           <a
-  href="#custom-order"
-  onClick={closeMenu}
-  className="nav-custom-order"
->
-  <span>Custom Order</span>
-  <span>✦</span>
-</a>
+            href="/#custom-order"
+            onClick={(e) => handleSectionLinkClick(e, "/#custom-order")}
+            className="nav-custom-order"
+          >
+            Custom Order <span>✦</span>
+          </a>
 
           <a
             href={STORE_CONFIG.instagram}
@@ -66,27 +118,36 @@ function Navbar() {
             rel="noreferrer"
             className="mobile-instagram"
           >
-            <SiInstagram size={19} />
+            <SiInstagram size={17} />
             Instagram
           </a>
+
         </nav>
 
         <div className="nav-actions">
+
           <button
             className="icon-button"
             aria-label="Search products"
-            onClick={() =>
-              document.getElementById("shop")?.scrollIntoView({
-                behavior: "smooth",
-              })
-            }
+            onClick={() => {
+              closeMenu();
+              navigate("/shop");
+            }}
           >
             <Search size={20} />
           </button>
 
-          <a href="#shop" className="icon-button" aria-label="Shop products">
+          <Link
+            to="/cart"
+            className="icon-button cart-nav-button"
+            aria-label={`Shopping cart, ${cartCount} items`}
+          >
             <ShoppingBag size={20} />
-          </a>
+
+            {cartCount > 0 && (
+              <span className="cart-count">{cartCount}</span>
+            )}
+          </Link>
 
           <a
             href={STORE_CONFIG.instagram}
@@ -106,9 +167,11 @@ function Navbar() {
           >
             {menuOpen ? <X size={25} /> : <Menu size={25} />}
           </button>
+
         </div>
 
       </div>
+
     </header>
   );
 }
