@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCart } from "../../hooks/useCart";
 import {
   Menu,
@@ -22,8 +22,20 @@ function scrollToSectionId(id) {
 function Navbar() {
   const { cartCount } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartPop, setCartPop] = useState(false);
+  const prevCartCountRef = useRef(cartCount);
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cartCount > prevCartCountRef.current) {
+      setCartPop(true);
+      const timer = setTimeout(() => setCartPop(false), 450);
+      prevCartCountRef.current = cartCount;
+      return () => clearTimeout(timer);
+    }
+    prevCartCountRef.current = cartCount;
+  }, [cartCount]);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -139,7 +151,7 @@ function Navbar() {
 
           <Link
             to="/cart"
-            className="icon-button cart-nav-button"
+            className={`icon-button cart-nav-button ${cartPop ? "cart-pop" : ""}`}
             aria-label={`Shopping cart, ${cartCount} items`}
           >
             <ShoppingBag size={20} />

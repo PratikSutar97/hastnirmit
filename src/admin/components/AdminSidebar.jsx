@@ -5,7 +5,7 @@ const menuItems = [
   { label: "Dashboard", path: "/admin", icon: "▦", end: true },
   { label: "Products", path: "/admin/products", icon: "□" },
   { label: "Categories", path: "/admin/categories", icon: "▤" },
-  { label: "Inventory", path: "/admin/inventory", icon: "▥" },
+  
   { label: "Orders", path: "/admin/orders", icon: "▣" },
   { label: "Customers", path: "/admin/customers", icon: "♙" },
   { label: "Settings", path: "/admin/settings", icon: "⚙" },

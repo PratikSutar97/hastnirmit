@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 
 import { SiInstagram } from "react-icons/si";
-
+import { Link } from "react-router-dom";
 import { STORE_CONFIG } from "../../config/storeConfig";
 
 function Footer() {
@@ -36,7 +36,7 @@ function Footer() {
             className="footer-social"
           >
             <SiInstagram size={19} />
-            Follow us on Instagram
+            Follow us and contact on Instagram
           </a>
 
         </div>
@@ -52,9 +52,9 @@ function Footer() {
         <div className="footer-links">
           <h3>Customer Care</h3>
           <a href="#contact">Contact Us</a>
-          <a href="#contact">Custom Orders</a>
-          <a href="#contact">Shipping Information</a>
-          <a href="#contact">FAQs</a>
+          <a href="#custom-order">Custom Orders</a>
+          <Link to="/shipping">Shipping Information</Link>
+          <Link to="/faq">FAQs</Link>
         </div>
 
         <div className="footer-contact">
@@ -67,7 +67,7 @@ function Footer() {
 
           <p>
             <Mail size={17} />
-            Contact us through Instagram
+            adminhastnirmit@gmail.com
           </p>
         </div>
 

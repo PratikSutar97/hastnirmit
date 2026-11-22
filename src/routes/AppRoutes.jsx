@@ -7,8 +7,12 @@ import AddProduct from "../admin/pages/AddProduct";
 import EditProduct from "../admin/pages/EditProduct";
 import Categories from "../admin/pages/Categories";
 import Orders from "../admin/pages/Orders";
+import Customers from "../admin/pages/Customers";
 import Home from "../pages/Home";
 import Shop from "../pages/Shop";
+import ShippingPolicy from "../pages/policies/ShippingPolicy";
+import FAQ from "../pages/FAQ";
+import Settings from "../admin/pages/Settings";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
 import ProductDetails from "../pages/ProductDetails";
@@ -16,7 +20,7 @@ import NotFound from "../pages/NotFound";
 
 import AdminLogin from "../admin/pages/AdminLogin";
 import Dashboard from "../admin/pages/Dashboard";
-import AdminLayout from "../components/layout/AdminLayout";
+import AdminLayout from "../admin/layout/AdminLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 function StoreLayout() {
@@ -39,6 +43,8 @@ function AppRoutes() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/product/:slug" element={<ProductDetails />} />
+        <Route path="/shipping" element={<ShippingPolicy />} />
+        <Route path="/faq" element={<FAQ />} />
       </Route>
 
       {/* Admin login */}
@@ -53,6 +59,8 @@ function AppRoutes() {
           <Route path="products/edit/:id" element={<EditProduct />} />
           <Route path="categories" element={<Categories />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
 

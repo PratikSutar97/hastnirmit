@@ -6,6 +6,8 @@ import {
   RefreshCw,
   FolderPlus,
   X,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 import {
@@ -46,6 +48,7 @@ function Categories() {
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [editingId, setEditingId] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -73,13 +76,27 @@ function Categories() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const resetForm = () => {
+  const resetForm = (collapse = true) => {
     setEditingId(null);
     setForm(emptyForm);
+    if (collapse) {
+      setFormOpen(false);
+    }
+  };
+
+  const handleToggleForm = () => {
+    setError("");
+    setSuccess("");
+    if (formOpen && editingId) {
+      resetForm(true);
+      return;
+    }
+    setFormOpen((prev) => !prev);
   };
 
   const handleEditClick = (category) => {
     setEditingId(category.id);
+    setFormOpen(true);
     setSuccess("");
     setError("");
     setForm({
@@ -109,7 +126,7 @@ function Categories() {
         await createCategory(form);
         setSuccess("Category created.");
       }
-      resetForm();
+      resetForm(true);
       await loadCategories();
     } catch (err) {
       console.error("Category save failed:", err);
@@ -130,7 +147,7 @@ function Categories() {
       setError("");
       setSuccess("");
       await deleteCategory(category.id);
-      if (editingId === category.id) resetForm();
+      if (editingId === category.id) resetForm(true);
       setSuccess("Category deleted.");
       await loadCategories();
     } catch (err) {
@@ -149,108 +166,134 @@ function Categories() {
           <p>Create and manage product categories for your storefront and product form.</p>
         </div>
 
-        <button
-          type="button"
-          className="admin-secondary-button"
-          onClick={loadCategories}
-          disabled={loading}
-        >
-          <RefreshCw size={16} />
-          Refresh
-        </button>
+        <div className="admin-product-actions">
+          <button
+            type="button"
+            className="admin-secondary-button"
+            onClick={loadCategories}
+            disabled={loading}
+          >
+            <RefreshCw size={16} />
+            Refresh
+          </button>
+
+          <button
+            type="button"
+            className="admin-primary-button"
+            onClick={handleToggleForm}
+            aria-expanded={formOpen}
+          >
+            {formOpen ? <ChevronUp size={17} /> : <Plus size={17} />}
+            {formOpen ? "Hide Form" : "Create New Category"}
+          </button>
+        </div>
       </div>
 
-      <form className="admin-product-form" onSubmit={handleSubmit}>
-        <div className="admin-form-section">
-          <h2>{editingId ? "Edit Category" : "Add New Category"}</h2>
+      {success && <p className="admin-success-text">{success}</p>}
 
-          <div className="admin-form-grid">
-            <div className="admin-form-group">
-              <label htmlFor="catName">Category Name *</label>
-              <input
-                id="catName"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="e.g. Hats, Handmade Jewellery"
-                required
-              />
-            </div>
-
-            <div className="admin-form-group">
-              <label htmlFor="catColor">Card Accent</label>
-              <select
-                id="catColor"
-                name="color"
-                value={form.color}
-                onChange={handleChange}
-              >
-                {COLOR_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="admin-form-group">
-              <label htmlFor="catIcon">Icon</label>
-              <select
-                id="catIcon"
-                name="icon"
-                value={form.icon}
-                onChange={handleChange}
-              >
-                {ICON_OPTIONS.map((iconName) => (
-                  <option key={iconName} value={iconName}>
-                    {iconName}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="admin-form-group full-width">
-              <label htmlFor="catDescription">Short Description</label>
-              <input
-                id="catDescription"
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="e.g. Handcrafted felt & crochet hats"
-              />
-            </div>
-          </div>
-
-          {error && <div className="admin-error-message">{error}</div>}
-          {success && <p className="admin-success-text">{success}</p>}
-
-          <div className="admin-form-actions">
-            {editingId && (
+      {formOpen && (
+        <form className="admin-product-form" onSubmit={handleSubmit}>
+          <div className="admin-form-section">
+            <div className="admin-collapsible-header">
+              <h2>{editingId ? "Edit Category" : "Add New Category"}</h2>
               <button
                 type="button"
-                className="admin-secondary-button"
-                onClick={resetForm}
+                className="admin-icon-button"
+                onClick={() => resetForm(true)}
+                aria-label="Collapse category form"
+                title="Close"
               >
-                <X size={16} />
-                Cancel Edit
+                <ChevronUp size={17} />
               </button>
-            )}
+            </div>
 
-            <button
-              type="submit"
-              className="admin-primary-button"
-              disabled={saving}
-            >
-              {editingId ? <Pencil size={16} /> : <Plus size={17} />}
-              {saving
-                ? "Saving..."
-                : editingId
-                  ? "Update Category"
-                  : "Add Category"}
-            </button>
+            <div className="admin-form-grid">
+              <div className="admin-form-group">
+                <label htmlFor="catName">Category Name *</label>
+                <input
+                  id="catName"
+                  name="name"
+                  value={form.name}
+                  onChange={handleChange}
+                  placeholder="e.g. Hats, Handmade Jewellery"
+                  required
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="catColor">Card Accent</label>
+                <select
+                  id="catColor"
+                  name="color"
+                  value={form.color}
+                  onChange={handleChange}
+                >
+                  {COLOR_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="admin-form-group">
+                <label htmlFor="catIcon">Icon</label>
+                <select
+                  id="catIcon"
+                  name="icon"
+                  value={form.icon}
+                  onChange={handleChange}
+                >
+                  {ICON_OPTIONS.map((iconName) => (
+                    <option key={iconName} value={iconName}>
+                      {iconName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="admin-form-group full-width">
+                <label htmlFor="catDescription">Short Description</label>
+                <input
+                  id="catDescription"
+                  name="description"
+                  value={form.description}
+                  onChange={handleChange}
+                  placeholder="e.g. Handcrafted felt & crochet hats"
+                />
+              </div>
+            </div>
+
+            {error && <div className="admin-error-message">{error}</div>}
+
+            <div className="admin-form-actions">
+              {editingId && (
+                <button
+                  type="button"
+                  className="admin-secondary-button"
+                  onClick={() => resetForm(true)}
+                >
+                  <X size={16} />
+                  Cancel Edit
+                </button>
+              )}
+
+              <button
+                type="submit"
+                className="admin-primary-button"
+                disabled={saving}
+              >
+                {editingId ? <Pencil size={16} /> : <Plus size={17} />}
+                {saving
+                  ? "Saving..."
+                  : editingId
+                    ? "Update Category"
+                    : "Add Category"}
+              </button>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      )}
 
       <div className="admin-products-summary">
         <FolderPlus size={19} />
@@ -267,7 +310,7 @@ function Categories() {
           <div className="admin-empty-state">
             <FolderPlus size={34} />
             <h3>No categories yet</h3>
-            <p>Add your first category above to show it on the Home page and in product forms.</p>
+            <p>Click &ldquo;Add Category&rdquo; above to create your first category.</p>
           </div>
         ) : (
           <table className="admin-products-table">

@@ -3,7 +3,7 @@ import {
   ShoppingBag,
   ArrowUpRight,
   Plus,
-  Check,
+  Minus,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -27,9 +27,29 @@ function normalizeImages(images) {
 }
 
 function ProductCard({ product }) {
-  const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
+  const {
+    cartItems = [],
+    cart = [],
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+  } = useCart();
+
   const [imageIndex, setImageIndex] = useState(0);
+
+  const items = cartItems.length ? cartItems : cart;
+
+  const cartEntry = useMemo(
+    () =>
+      items.find(
+        (item) =>
+          (item.id && product.id && item.id === product.id) ||
+          (item.slug && product.slug && item.slug === product.slug)
+      ),
+    [items, product.id, product.slug]
+  );
+
+  const quantityInCart = Number(cartEntry?.quantity ?? cartEntry?.qty ?? 0);
 
   const imageList = useMemo(
     () => normalizeImages(product.images),
@@ -42,6 +62,11 @@ function ProductCard({ product }) {
 
   const hasMultipleImages = imageList.length > 1;
   const currentImage = imageList[imageIndex] || "";
+  const isOutOfStock = Number(product.stock ?? 0) <= 0;
+  const maxStock =
+    product.stock != null && Number(product.stock) > 0
+      ? Number(product.stock)
+      : Infinity;
 
   const handlePrevImage = (event) => {
     event.preventDefault();
@@ -60,15 +85,39 @@ function ProductCard({ product }) {
   };
 
   const handleAddToCart = () => {
+    if (isOutOfStock) return;
     addToCart({
       ...product,
       images: imageList,
     });
-    setAdded(true);
+  };
 
-    setTimeout(() => {
-      setAdded(false);
-    }, 1500);
+  const handleDecrease = () => {
+    if (quantityInCart <= 1) {
+      if (typeof removeFromCart === "function") {
+        removeFromCart(product.id || product.slug);
+      } else if (typeof updateQuantity === "function") {
+        updateQuantity(product.id || product.slug, 0);
+      }
+      return;
+    }
+
+    if (typeof updateQuantity === "function") {
+      updateQuantity(product.id || product.slug, quantityInCart - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    if (quantityInCart >= maxStock) return;
+
+    if (typeof updateQuantity === "function") {
+      updateQuantity(product.id || product.slug, quantityInCart + 1);
+    } else {
+      addToCart({
+        ...product,
+        images: imageList,
+      });
+    }
   };
 
   return (
@@ -151,19 +200,40 @@ function ProductCard({ product }) {
           )}
         </div>
 
-        <button
-          type="button"
-          className="add-cart-button"
-          onClick={handleAddToCart}
-          disabled={product.stock <= 0}
-        >
-          {added ? <Check size={16} /> : <Plus size={16} />}
-          {product.stock <= 0
-            ? "Out of Stock"
-            : added
-              ? "Added to Cart"
-              : "Add to Cart"}
-        </button>
+        {quantityInCart > 0 ? (
+          <div className="cart-qty-stepper" role="group" aria-label="Cart item quantity">
+            <button
+              type="button"
+              className="cart-qty-btn"
+              onClick={handleDecrease}
+              aria-label="Decrease quantity"
+            >
+              <Minus size={15} />
+            </button>
+
+            <span className="cart-qty-count">{quantityInCart}</span>
+
+            <button
+              type="button"
+              className="cart-qty-btn"
+              onClick={handleIncrease}
+              disabled={quantityInCart >= maxStock}
+              aria-label="Increase quantity"
+            >
+              <Plus size={15} />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            className="add-cart-button"
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+          >
+            <Plus size={16} />
+            {isOutOfStock ? "Out of Stock" : "Add to Cart"}
+          </button>
+        )}
 
         <button
           type="button"

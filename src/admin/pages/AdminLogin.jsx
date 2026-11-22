@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-
+import SEO from "../../components/common/SEO";
 function AdminLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -35,6 +35,7 @@ function AdminLogin() {
 
   return (
     <main className="admin-login-page">
+        <SEO path="/admin/login" title="Admin Login" noIndex />
       <form className="admin-login-card" onSubmit={handleSubmit}>
         <h1>Hastnirmit Admin</h1>
         <p>Sign in to manage your store.</p>

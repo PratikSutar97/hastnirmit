@@ -4,6 +4,7 @@ import AppRoutes from "./routes/AppRoutes";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import WhatsAppButton from "./components/common/WhatsAppButton";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 import "./App.css";
 import "./styles/admin.css";
@@ -11,6 +12,7 @@ import "./styles/admin.css";
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AuthProvider>
         <CartProvider>
           <AppRoutes />

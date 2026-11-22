@@ -28,8 +28,8 @@ function AdminHeader({ onToggleSidebar }) {
         </button>
 
         <div>
-          <h3>Store Management</h3>
-          <p>Manage your Hastnirmit store</p>
+          <h3>Hastnirmit Store Management</h3>
+          <p>Manage your store</p>
         </div>
       </div>
 

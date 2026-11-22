@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   collection,
   getCountFromServer,
@@ -65,10 +66,30 @@ function Dashboard() {
   }, []);
 
   const cards = [
-    { label: "Total Products", value: stats.products, icon: "□" },
-    { label: "Categories", value: stats.categories, icon: "▤" },
-    { label: "Total Orders", value: stats.orders, icon: "▣" },
-    { label: "Customers", value: stats.customers, icon: "♙" },
+    {
+      label: "Total Products",
+      value: stats.products,
+      icon: "□",
+      to: "/admin/products",
+    },
+    {
+      label: "Categories",
+      value: stats.categories,
+      icon: "▤",
+      to: "/admin/categories",
+    },
+    {
+      label: "Total Orders",
+      value: stats.orders,
+      icon: "▣",
+      to: "/admin/orders",
+    },
+    {
+      label: "Customers",
+      value: stats.customers,
+      icon: "♙",
+      to: "/admin/customers",
+    },
   ];
 
   return (
@@ -88,7 +109,11 @@ function Dashboard() {
 
       <div className="admin-stats-grid">
         {cards.map((card) => (
-          <div className="admin-stat-card" key={card.label}>
+          <Link
+            to={card.to}
+            className="admin-stat-card admin-stat-card-link"
+            key={card.label}
+          >
             <div className="admin-stat-icon">{card.icon}</div>
 
             <div>
@@ -97,7 +122,7 @@ function Dashboard() {
                 {loading ? "..." : card.value.toLocaleString("en-IN")}
               </h2>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

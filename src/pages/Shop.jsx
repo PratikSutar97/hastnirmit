@@ -2,7 +2,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { RotateCcw, ShoppingBag } from "lucide-react";
-
+import SEO from "../components/common/SEO";
 import { useProducts } from "../hooks/useProducts";
 import ProductFilters from "../components/shop/ProductFilters";
 import ProductGrid from "../components/shop/ProductGrid";
@@ -113,19 +113,24 @@ function Shop() {
 
   return (
     <main className="shop-page">
+      <SEO
+          path="/shop"
+          title="Shop Handmade Collection"
+          description="Browse all handcrafted jewellery, crochet hats, and custom handmade gifts from Hastnirmit."
+        />
       <section className="shop-banner">
-        <span className="section-eyebrow">
+        {/* <span className="section-eyebrow">
           HANDCRAFTED WITH LOVE
-        </span>
+        </span> */}
 
         <h1>
           Explore Our <span>Creations</span>
         </h1>
-
+{/* 
         <p>
           Discover handmade jewellery, festive decorations
           and beautiful creations for every occasion.
-        </p>
+        </p> */}
       </section>
 
       <section className="shop-container">

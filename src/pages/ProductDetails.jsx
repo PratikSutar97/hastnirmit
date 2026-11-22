@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import SEO from "../components/common/SEO";
 import { useParams, Link, Navigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -54,6 +55,37 @@ function ProductDetails() {
   if (error) {
     return (
       <main className="product-details-page">
+        <SEO
+          path={`/product/${product.slug}`}
+          title={product.name}
+          description={
+            product.description ||
+            `Buy ${product.name} handcrafted by Hastnirmit.`
+          }
+          image={imageList[0]}
+          type="product"
+          schema={{
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            image: imageList,
+            description:
+              product.description ||
+              `${product.name} handcrafted by Hastnirmit.`,
+            sku: product.id,
+            brand: { "@type": "Brand", name: "Hastnirmit" },
+            offers: {
+              "@type": "Offer",
+              url: `https://hastnirmit.netlify.app/product/${product.slug}`,
+              priceCurrency: "INR",
+              price: Number(product.price) || 0,
+              availability:
+                Number(product.stock ?? 0) > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+            },
+          }}
+        />
         <div className="product-details-container">
           <h2>Unable to load this product</h2>
           <p>{error}</p>

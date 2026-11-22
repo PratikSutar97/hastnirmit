@@ -28,7 +28,7 @@ function CustomOrderSection() {
   ];
 
   return (
-    <section className="custom-order-section" id="custom-order">
+    <section className="custom-order-section" >
 
       <div className="custom-order-intro">
 
@@ -48,8 +48,7 @@ function CustomOrderSection() {
           A unique jewellery design, a personalised gift
           or festive home decoration?
 
-          Tell us your idea and let's bring it to life
-          with handmade creativity.
+          Tell us your idea and let's bring it to life.
         </p>
 
         <div className="custom-benefits">
@@ -58,7 +57,7 @@ function CustomOrderSection() {
             const Icon = item.icon;
 
             return (
-              <div className="custom-benefit" key={item.title}>
+              <div className="custom-benefit" key={item.title} id="custom-order">
 
                 <div className="custom-benefit-icon">
                   <Icon size={22} />
@@ -75,12 +74,9 @@ function CustomOrderSection() {
 
         </div>
 
-        <div className="custom-order-highlight">
-          <span>✦</span>
-          Every custom creation starts with your idea.
-        </div>
+        
 
-        <a href="#shop" className="custom-back-link">
+        <a href="#shop" className="custom-back-link" >
           Explore ready-made collections
           <ArrowRight size={16} />
         </a>
